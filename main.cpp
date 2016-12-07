@@ -27,7 +27,7 @@ int mean(Mat frame) {
 }
 
 int main() {
-    if (gpioInitialize() < 0) {
+    if (gpioInitialise() < 0) {
         printf("PWM initialization failed, quitting\n");
         return -1;
     }
