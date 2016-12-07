@@ -15,11 +15,12 @@ int mean(Mat frame) {
     long sum = 0;
     int samples = 0;
     for (int i = start_v * frame.cols + start_h;
-            i < end_v * frame.cols + end_h;
-            i = i % frame.cols + spacing > end_h ?
-            i + spacing + (frame.cols - end_h) + start_h : i + spacing) {
+            i < end_v * frame.cols + end_h;) {
         samples++;
         sum += frame.data[3*i] + frame.data[3*i+1] + frame.data[3*i+2];
+        i = i % frame.cols + spacing > end_h ?
+            i + spacing + (frame.cols - end_h) + start_h +
+            (spacing-1) * frame.cols : i + spacing;
     }
     return sum / (samples * 3);
 }
@@ -51,6 +52,7 @@ int main() {
             end_v = 2 * frame.rows / 3;
             spacing = 30;
         }
+        printf("Got frame\n");
         int brightness = mean(frame);
         fprintf(pwm, "p 12 %d", brightness);
         printf("Brightness: %d\n", brightness);
