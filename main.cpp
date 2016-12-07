@@ -28,7 +28,7 @@ int main() {
     FILE * pwm = fopen("/dev/pigpio", "w");
     if (!pwm) {
         printf("Couldn't open /dev/pigpio, run 'sudo pigpiod' first\n");
-        return;
+        return -1;
     }
     VideoCapture camera;
     for (;;) {
@@ -41,7 +41,6 @@ int main() {
     for (;;) {
         static int first_run = 1;
         Mat frame;
-        for (int i = 0; i < 30; i++) camera.grab();
         camera >> frame;
         if (frame.empty()) continue;
         else if (first_run) {
@@ -53,7 +52,7 @@ int main() {
             spacing = 30;
         }
         int brightness = mean(frame);
-        fprintf("p 12 %d", brightness);
+        fprintf(pwm, "p 12 %d", brightness);
         printf("Brightness: %d\n", brightness);
     }
 }
