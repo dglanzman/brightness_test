@@ -4,6 +4,7 @@
 #include <cmath>
 #include <opencv2/highgui/highgui.hpp>
 #include <unistd.h>
+#include <stdio.h>
 
 using namespace std;
 using namespace cv;
@@ -24,6 +25,11 @@ int mean(Mat frame) {
 }
 
 int main() {
+    FILE * pwm = fopen("/dev/pigpio", "w");
+    if (!pwm) {
+        printf("Couldn't open /dev/pigpio, run 'sudo pigpiod' first\n");
+        return;
+    }
     VideoCapture camera;
     for (;;) {
         printf("opening camera\n");
@@ -47,6 +53,7 @@ int main() {
             spacing = 30;
         }
         int brightness = mean(frame);
+        fprintf("p 12 %d", brightness);
         printf("Brightness: %d\n", brightness);
     }
 }
