@@ -54,7 +54,7 @@ int main() {
         }
         printf("Got frame\n");
         int brightness = mean(frame);
-        gpioPWM(12, brightness);
+        gpioPWM(12, 255-brightness);
         printf("Brightness: %d\n", brightness);
     }
 }
