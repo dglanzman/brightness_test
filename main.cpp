@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <unistd.h>
 #include <stdio.h>
+#include <pigpio.h>
 
 using namespace std;
 using namespace cv;
@@ -26,9 +27,8 @@ int mean(Mat frame) {
 }
 
 int main() {
-    FILE * pwm = fopen("/dev/pigpio", "w");
-    if (!pwm) {
-        printf("Couldn't open /dev/pigpio, run 'sudo pigpiod' first\n");
+    if (gpioInitialize() < 0) {
+        printf("PWM initialization failed, quitting\n");
         return -1;
     }
     VideoCapture camera;
@@ -54,7 +54,7 @@ int main() {
         }
         printf("Got frame\n");
         int brightness = mean(frame);
-        fprintf(pwm, "p 12 %d", brightness);
+        gpioPWM(12, brightness);
         printf("Brightness: %d\n", brightness);
     }
 }
